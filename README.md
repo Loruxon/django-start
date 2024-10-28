@@ -3,7 +3,7 @@
 
 `sudo apt update && sudo apt upgrade -y`<br>
 `sudo apt install python3 python3-pip -y`<br>
-`pip3 install django`<br>
+`pip3 install django (pip3 install django --break-system-packages)`<br>
 `django-admin startproject myproject`<br>
 `cd myproject`<br>
 `python3 manage.py startapp blog`<br>
