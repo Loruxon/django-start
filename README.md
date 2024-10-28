@@ -9,7 +9,7 @@
 `ALLOWED_HOSTS = ['*']`<br>
 `nano myapp/models.py`<br>
 `from django.db import models`<br>
-```python
+```
 class Category(models.Model):
     category_url = models.SlugField(unique=True, verbose_name="URL категории")
     category_name = models.CharField(max_length=200, verbose_name="Название категории")
@@ -49,7 +49,7 @@ class Post(models.Model):
         verbose_name = "Пост"
         verbose_name_plural = "Посты"
 
-
+```
 `nano myapp/admin.py`<br>
 ```python
 from django.contrib import admin
