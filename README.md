@@ -51,15 +51,15 @@ class Post(models.Model):
 
 ```
 `nano myapp/admin.py`<br>
-```python
+```
 from django.contrib import admin
 from .models import Category, Tag, Post
 
 admin.site.register(Category)
 admin.site.register(Tag)
 admin.site.register(Post)
-
+```
 `python3 manage.py makemigrations`<br>
 `python3 manage.py migrate`<br>
 `python3 manage.py createsuperuser`<br>
-`python3 manage.py runserver 0.0.0.0:8000`<br>
+`python3 manage.py runserver 0.0.0.0:8000`
