@@ -1,21 +1,15 @@
+`sudo apt update && sudo apt upgrade -y`<br>
+`sudo apt install python3 python3-pip -y`<br>
+`pip3 install django`<br>
+`django-admin startproject myproject`<br>
+`cd myproject`<br>
+`python3 manage.py startapp blog`<br>
+`nano myproject/settings.py`<br>
+`INSTALLED_APPS = ['blog']`<br>
+`ALLOWED_HOSTS = ['*']`<br>
+`nano myapp/models.py`<br>
+`from django.db import models`<br>
 ```python
-sudo apt update && sudo apt upgrade -y
-sudo apt install python3 python3-pip -y
-
-pip3 install django
-django-admin startproject myproject
-cd myproject
-python3 manage.py startapp blog
-
-nano myproject/settings.py
-INSTALLED_APPS = [
-    'blog',
-]
-ALLOWED_HOSTS = ['*']
-
-nano myapp/models.py
-from django.db import models
-
 class Category(models.Model):
     category_url = models.SlugField(unique=True, verbose_name="URL категории")
     category_name = models.CharField(max_length=200, verbose_name="Название категории")
@@ -56,7 +50,8 @@ class Post(models.Model):
         verbose_name_plural = "Посты"
 
 
-nano myapp/admin.py
+`nano myapp/admin.py`<br>
+```python
 from django.contrib import admin
 from .models import Category, Tag, Post
 
@@ -64,7 +59,7 @@ admin.site.register(Category)
 admin.site.register(Tag)
 admin.site.register(Post)
 
-python3 manage.py makemigrations
-python3 manage.py migrate
-python3 manage.py createsuperuser
-python3 manage.py runserver 0.0.0.0:8000
+`python3 manage.py makemigrations`<br>
+`python3 manage.py migrate`<br>
+`python3 manage.py createsuperuser`<br>
+`python3 manage.py runserver 0.0.0.0:8000`<br>
