@@ -1,3 +1,6 @@
+`sudo adduser son`<br>
+`sudo usermod -aG sudo son`<br>
+
 `sudo apt update && sudo apt upgrade -y`<br>
 `sudo apt install python3 python3-pip -y`<br>
 `pip3 install django`<br>
