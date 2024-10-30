@@ -1,9 +1,16 @@
 `sudo adduser son`<br>
 `sudo usermod -aG sudo son`<br>
-
+<br>
 `sudo apt update && sudo apt upgrade -y`<br>
-`sudo apt install python3 python3-pip -y`<br>
-`pip3 install django (pip3 install django --break-system-packages)`<br>
+`sudo apt install python3 python3-pip python3-venv -y`<br>
+<br>
+`mkdir myproject`<br>
+`cd myproject`<br>
+<br>
+`python3 -m venv django_env`<br>
+`source django_env/bin/activate`<br>
+<br>
+`pip3 install django`<br>
 `django-admin startproject myproject`<br>
 `cd myproject`<br>
 `python3 manage.py startapp blog`<br>
