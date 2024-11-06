@@ -13,61 +13,85 @@
 `pip3 install django`<br>
 `django-admin startproject myproject`<br>
 `cd myproject`<br>
-`python3 manage.py startapp blog`<br>
+`python3 manage.py startapp wb`<br>
 `nano myproject/settings.py`<br>
-`INSTALLED_APPS = ['blog']`<br>
+`INSTALLED_APPS = ['wb']`<br>
 `ALLOWED_HOSTS = ['*']`<br>
 `nano myapp/models.py`<br>
 `from django.db import models`<br>
 ```
-class Category(models.Model):
-    category_url = models.SlugField(unique=True, verbose_name="URL категории")
-    category_name = models.CharField(max_length=200, verbose_name="Название категории")
+
+
+Django:
+from django.db import models
+
+class Adv(models.Model):
+    adv_create_time = models.DateTimeField(null=True, blank=True)  # Время создания
+    adv_auto_params_cpm = models.FloatField(null=True, blank=True)  # CPM
+    adv_auto_params_subject_name = models.CharField(max_length=255, null=True, blank=True)  # Название темы
+    adv_auto_params_subject_id = models.IntegerField(null=True, blank=True)  # Идентификатор темы
+    adv_auto_params_nms = models.TextField(null=True, blank=True)  # Список NMS
+    adv_name = models.CharField(max_length=255, null=True, blank=True)  # Название рекламы
+    adv_advert_id = models.IntegerField(unique=True)  # Идентификатор рекламы (уникальный)
+    adv_status = models.CharField(max_length=50, null=True, blank=True)  # Статус рекламы
+    adv_type = models.CharField(max_length=50, null=True, blank=True)  # Тип рекламы
 
     def __str__(self):
-        return self.category_name
+        return self.adv_name
 
-    class Meta:
-        verbose_name = "Категория"
-        verbose_name_plural = "Категории"
 
-class Tag(models.Model):
-    tag_url = models.SlugField(unique=True, verbose_name="URL тега")
-    tag_name = models.CharField(max_length=200, verbose_name="Название тега")
+Python:
+import requests
+from myapp.models import Adv  # Импортируем модель
 
-    def __str__(self):
-        return self.tag_name
+api_url = "https://advert-api.wildberries.ru/adv/v1/promotion/adverts?type=8&order=change&direction=asc"
+api_key = "eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQwNzE1djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTczODA5MzY3MCwiaWQiOiJhNjA3ODg5NS1iNjFlLTQ5ZDEtYmQwZS1mM2FjNTJiNDU2OWYiLCJJpaWQiOjE1MTE1NjYxMCwib2lkIjoxMDU4ODEwLCJzIjo4MTkwLCJzaWQiOiJkYjM1NjRiYy04MGYwLTQ5OGYtOGVkZC00NjkxZTQ0NTYwMTAiLCJ0IjpmYWxzZSwidWlkIjoxNTExNTY2MTB9.h4A6DP8kxL6UJo3WR92TvjIQjQW-Pm1wj4JaA8Nxb6PvhzhrMMx22bBGVDFOzQQRXeTqdDO4lyzduq-vPxiUsw"
+headers = {
+    "Authorization": api_key,
+    "Content-Type": "application/json"
+}
+response = requests.post(api_url, headers=headers, json=[])
 
-    class Meta:
-        verbose_name = "Тег"
-        verbose_name_plural = "Теги"
+data = response.json()
 
-class Post(models.Model):
-    post_url = models.SlugField(unique=True, verbose_name="URL поста")
-    post_keywords = models.CharField(max_length=255, verbose_name="Ключевые слова")
-    post_description = models.TextField(verbose_name="Описание")
-    post_title = models.CharField(max_length=200, verbose_name="Заголовок")
-    post_text = models.TextField(verbose_name="Текст")
+# Обработка данных и сохранение в базу данных
+for item in data:
+    adv_create_time = item.get('createTime')
+    adv_auto_params = item.get('autoParams', {})
+    adv_auto_params_cpm = adv_auto_params.get('cpm')
+    adv_auto_params_subject = adv_auto_params.get('subject', {})
+    adv_auto_params_subject_name = adv_auto_params_subject.get('name')
+    adv_auto_params_subject_id = adv_auto_params_subject.get('id')
+    adv_auto_params_nms = ", ".join(map(str, adv_auto_params.get('nms', [])))
+    adv_name = item.get('name')
+    adv_advert_id = item.get('advertId')
+    adv_status = item.get('status')
+    adv_type = item.get('type')
 
-    categories = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория")
-    tags = models.ManyToManyField(Tag, verbose_name="Теги")
+    # Обновление или создание записи в базе данных
+    Adv.objects.update_or_create(
+        adv_advert_id=adv_advert_id,  # Условие поиска по уникальному adv_advert_id
+        defaults={  # Если запись найдена, обновляются эти поля
+            'adv_create_time': adv_create_time,
+            'adv_auto_params_cpm': adv_auto_params_cpm,
+            'adv_auto_params_subject_name': adv_auto_params_subject_name,
+            'adv_auto_params_subject_id': adv_auto_params_subject_id,
+            'adv_auto_params_nms': adv_auto_params_nms,
+            'adv_name': adv_name,
+            'adv_status': adv_status,
+            'adv_type': adv_type,
+        }
+    )
 
-    def __str__(self):
-        return self.post_title
-
-    class Meta:
-        verbose_name = "Пост"
-        verbose_name_plural = "Посты"
 
 ```
-`nano myapp/admin.py`<br>
+`nano wb/admin.py`<br>
 ```
 from django.contrib import admin
-from .models import Category, Tag, Post
+from .models import Adv
 
-admin.site.register(Category)
-admin.site.register(Tag)
-admin.site.register(Post)
+
+admin.site.register(Adv)
 ```
 `python3 manage.py makemigrations`<br>
 `python3 manage.py migrate`<br>
