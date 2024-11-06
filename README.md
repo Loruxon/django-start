@@ -7,8 +7,8 @@
 `mkdir myproject`<br>
 `cd myproject`<br>
 <br>
-`python3 -m venv django_env`<br>
-`source django_env/bin/activate`<br>
+`python3 -m venv wb_env`<br>
+`source wb_env/bin/activate`<br>
 <br>
 `pip3 install django`<br>
 `django-admin startproject myproject`<br>
@@ -75,7 +75,7 @@ for item in data:
     )
 ```
 `python manage.py shell`<br>
-`from myapp.import_ads import *`<br>
+`from wb.update_adv import *`<br>
 `nano wb/admin.py`<br>
 ```
 from django.contrib import admin
