@@ -17,12 +17,8 @@
 `nano myproject/settings.py`<br>
 `INSTALLED_APPS = ['wb']`<br>
 `ALLOWED_HOSTS = ['*']`<br>
-`nano myapp/models.py`<br>
-`from django.db import models`<br>
+`nano wb/models.py`<br>
 ```
-
-
-Django:
 from django.db import models
 
 class Adv(models.Model):
@@ -38,11 +34,11 @@ class Adv(models.Model):
 
     def __str__(self):
         return self.adv_name
-
-
-Python:
+```
+`nano wb/update_adv.py`<br>
+```
 import requests
-from myapp.models import Adv  # Импортируем модель
+from wb.models import Adv
 
 api_url = "https://advert-api.wildberries.ru/adv/v1/promotion/adverts?type=8&order=change&direction=asc"
 api_key = "eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjQwNzE1djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTczODA5MzY3MCwiaWQiOiJhNjA3ODg5NS1iNjFlLTQ5ZDEtYmQwZS1mM2FjNTJiNDU2OWYiLCJJpaWQiOjE1MTE1NjYxMCwib2lkIjoxMDU4ODEwLCJzIjo4MTkwLCJzaWQiOiJkYjM1NjRiYy04MGYwLTQ5OGYtOGVkZC00NjkxZTQ0NTYwMTAiLCJ0IjpmYWxzZSwidWlkIjoxNTExNTY2MTB9.h4A6DP8kxL6UJo3WR92TvjIQjQW-Pm1wj4JaA8Nxb6PvhzhrMMx22bBGVDFOzQQRXeTqdDO4lyzduq-vPxiUsw"
@@ -51,10 +47,7 @@ headers = {
     "Content-Type": "application/json"
 }
 response = requests.post(api_url, headers=headers, json=[])
-
 data = response.json()
-
-# Обработка данных и сохранение в базу данных
 for item in data:
     adv_create_time = item.get('createTime')
     adv_auto_params = item.get('autoParams', {})
@@ -68,10 +61,8 @@ for item in data:
     adv_status = item.get('status')
     adv_type = item.get('type')
 
-    # Обновление или создание записи в базе данных
     Adv.objects.update_or_create(
-        adv_advert_id=adv_advert_id,  # Условие поиска по уникальному adv_advert_id
-        defaults={  # Если запись найдена, обновляются эти поля
+        adv_advert_id=adv_advert_id, defaults={
             'adv_create_time': adv_create_time,
             'adv_auto_params_cpm': adv_auto_params_cpm,
             'adv_auto_params_subject_name': adv_auto_params_subject_name,
@@ -82,14 +73,13 @@ for item in data:
             'adv_type': adv_type,
         }
     )
-
-
 ```
+`python manage.py shell`<br>
+`from myapp.import_ads import *`<br>
 `nano wb/admin.py`<br>
 ```
 from django.contrib import admin
 from .models import Adv
-
 
 admin.site.register(Adv)
 ```
